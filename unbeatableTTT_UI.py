@@ -9,7 +9,6 @@ from tkinter import messagebox
 
 class unbeatableTTTGameUI:
 
-    # initial setup
     def __init__(self, root):
         self.root = root
         self.root.title("Tic Tac Toe")
@@ -28,7 +27,6 @@ class unbeatableTTTGameUI:
         self.board_setup()
         self.choose_player()
 
-    # to put the main game window in the center of the screen
     def center_window(self):
         window_width = 400
         window_height = 450
@@ -41,7 +39,6 @@ class unbeatableTTTGameUI:
 
         self.root.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
     
-    # set up the board
     def board_setup(self):
         for row in range(3):
             self.root.grid_rowconfigure(row, weight=1, minsize=100)
@@ -54,7 +51,6 @@ class unbeatableTTTGameUI:
                 button.grid(row=row, column=col)
                 self.buttons[row][col] = button
     
-    # the user can choose which letter to be
     def choose_player(self):
         def set_player(player_choice):
             self.player = player_choice
@@ -73,7 +69,6 @@ class unbeatableTTTGameUI:
         popup = tk.Toplevel(self.root)
         popup.title("Choose a Letter (x goes first)")
 
-        # configure popup
         popup.resizable(False, False)
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -94,7 +89,6 @@ class unbeatableTTTGameUI:
 
         popup.protocol("WM_DELETE_WINDOW", on_close)
 
-    # when the user clicks a space
     def on_click(self, row, col):
         if self.board[row][col] == "" and self.current_player == self.player:
             self.board[row][col] = self.player
@@ -112,8 +106,7 @@ class unbeatableTTTGameUI:
             else:
                 self.current_player = self.cpu
                 self.root.after(500, self.cpu_move)
-
-    # minimax logic  
+ 
     def minimax(self, depth, is_maximizing):
         winner = self.find_winner()
         if winner == self.cpu:
@@ -144,7 +137,6 @@ class unbeatableTTTGameUI:
                         best_score = min(score, best_score)
             return best_score
 
-    # when the cpu moves
     def cpu_move(self):
         best_score = -float('inf')
         best_move = None
@@ -177,7 +169,6 @@ class unbeatableTTTGameUI:
             else:
                 self.current_player = self.player
 
-    # if it's a draw
     def is_draw(self):
         board_full = True
         for row in self.board:
@@ -191,39 +182,41 @@ class unbeatableTTTGameUI:
             return True
         else:
             return False
-
-    # to check for a winner    
+  
     def find_winner(self):
-        for i in range(3):
-            # rows
-            if self.board[i][0] == self.board[i][1] == self.board[i][2] != "":
-                return self.board[i][0]
-            #columns
-            if self.board[0][i] == self.board[1][i] == self.board[2][i] != "":
-                return self.board[0][i]
-        # upper left to lower right diagonal
-        if self.board[0][0] == self.board[1][1] == self.board [2][2] != "":
-            return self.board[0][0]
-        # lower left to upper right diagonal
-        if self.board[0][2] == self.board[1][1] == self.board[2][0] != "":
-            return self.board[0][2]
-        
-        # if no one won yet
-        return None
+        if self.check_diagonals():
+            winner = self.check_diagonals()
+        elif self.check_rows_cols():
+            winner = self.check_rows_cols()
+        else:
+            winner = None
+        return winner
     
-    # resetting the board after the game/inbetween games
     def reset_board(self):
         for row in range(3):
             for col in range(3):
                 self.board[row][col] = ""
                 self.buttons[row][col]["text"] = ""
-        # self.current_player = self.player if self.player == "x" else self.cpu
         self.play_again()
 
-    # check if the user wants to play again
     def play_again(self):
         answer = messagebox.askyesno("Game Over", "Do you want to play again?")
         if answer:
             self.choose_player()
         else:
             self.root.quit()
+
+    def check_rows_cols(self):
+        for i in range(3):
+            if self.board[i][0] == self.board[i][1] == self.board[i][2] != "":
+                return self.board[i][0]
+            if self.board[0][i] == self.board[1][i] == self.board[2][i] != "":
+                return self.board[0][i]
+        return None
+            
+    def check_diagonals(self):
+        if self.board[0][0] == self.board[1][1] == self.board [2][2] != "":
+            return self.board[0][0]
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != "":
+            return self.board[0][2]
+        return None
