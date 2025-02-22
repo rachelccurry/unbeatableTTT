@@ -22,6 +22,8 @@ class unbeatableTTTGameUI:
         self.cpu = ""
         self.current_player = ""
 
+        self.win_spots = []
+
         self.buttons = [[None for i in range(3)] for j in range(3)]
         
         self.board_setup()
@@ -96,6 +98,7 @@ class unbeatableTTTGameUI:
 
             winner = self.find_winner()
             if winner:
+                self.highlight_winner(self.win_spots)
                 messagebox.showinfo(message="It's over - " + winner + " wins")
                 self.reset_board()
                 return
@@ -159,6 +162,7 @@ class unbeatableTTTGameUI:
 
             winner = self.find_winner()
             if winner:
+                self.highlight_winner(self.win_spots)
                 messagebox.showinfo(message="It's over - " + winner + " wins")
                 self.reset_board()
                 return
@@ -197,6 +201,7 @@ class unbeatableTTTGameUI:
             for col in range(3):
                 self.board[row][col] = ""
                 self.buttons[row][col]["text"] = ""
+                self.buttons[row][col].config(text="", bg="SystemButtonFace")
         self.play_again()
 
     def play_again(self):
@@ -209,14 +214,26 @@ class unbeatableTTTGameUI:
     def check_rows_cols(self):
         for i in range(3):
             if self.board[i][0] == self.board[i][1] == self.board[i][2] != "":
+                self.win_spots = [[i,0], [i,1], [i,2]]
                 return self.board[i][0]
             if self.board[0][i] == self.board[1][i] == self.board[2][i] != "":
+                self.win_spots = [[0,i], [1,i], [2,i]]
                 return self.board[0][i]
         return None
             
     def check_diagonals(self):
         if self.board[0][0] == self.board[1][1] == self.board [2][2] != "":
+            self.win_spots = [[0,0], [1,1], [2,2]]
             return self.board[0][0]
         if self.board[0][2] == self.board[1][1] == self.board[2][0] != "":
+            self.win_spots = [[0,2], [1,1], [2,0]]
             return self.board[0][2]
         return None
+    
+    def highlight_winner(self, win_spots):
+        for row in range(3):
+            for col in range(3):
+                self.buttons[row][col].config(state="disabled")
+
+        for row, col in win_spots:
+            self.buttons[row][col].config(state="normal", background="green", font=("Arial", 20, "bold"))
