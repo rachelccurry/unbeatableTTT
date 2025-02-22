@@ -103,6 +103,7 @@ class unbeatableTTTGameUI:
                 self.reset_board()
                 return
             elif self.is_draw():
+                self.highlight_draw()
                 messagebox.showinfo(message="ew a draw")
                 self.reset_board()
                 return
@@ -167,6 +168,7 @@ class unbeatableTTTGameUI:
                 self.reset_board()
                 return
             elif self.is_draw():
+                self.highlight_draw()
                 messagebox.showinfo(message="ew a draw")
                 self.reset_board()
                 return
@@ -236,4 +238,12 @@ class unbeatableTTTGameUI:
                 self.buttons[row][col].config(state="disabled")
 
         for row, col in win_spots:
-            self.buttons[row][col].config(state="normal", background="green", font=("Arial", 20, "bold"))
+            self.buttons[row][col].config(state="normal", background="green")
+
+    def highlight_draw(self):
+        for row in range(3):
+            for col in range(3):
+                if self.board[row][col] == "x":
+                    self.buttons[row][col].config(state="normal", background="yellow")
+                else:
+                    self.buttons[row][col].config(state="normal", background="purple")
