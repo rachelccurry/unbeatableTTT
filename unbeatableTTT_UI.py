@@ -201,7 +201,7 @@ class unbeatableTTTGameUI:
             for col in range(3):
                 self.board[row][col] = ""
                 self.buttons[row][col]["text"] = ""
-                self.buttons[row][col].config(text="", bg="SystemButtonFace")
+                self.buttons[row][col].config(text="", bg="SystemButtonFace", state="normal")
         self.play_again()
 
     def play_again(self):
