@@ -99,11 +99,13 @@ class unbeatableTTTGameUI:
             winner = self.find_winner()
             if winner:
                 self.highlight_winner(self.win_spots)
+                self.root.update_idletasks()
                 messagebox.showinfo(message="It's over - " + winner + " wins")
                 self.reset_board()
                 return
             elif self.is_draw():
                 self.highlight_draw()
+                self.root.update_idletasks()
                 messagebox.showinfo(message="ew a draw")
                 self.reset_board()
                 return
@@ -164,11 +166,13 @@ class unbeatableTTTGameUI:
             winner = self.find_winner()
             if winner:
                 self.highlight_winner(self.win_spots)
+                self.root.update_idletasks()
                 messagebox.showinfo(message="It's over - " + winner + " wins")
                 self.reset_board()
                 return
             elif self.is_draw():
                 self.highlight_draw()
+                self.root.update_idletasks()
                 messagebox.showinfo(message="ew a draw")
                 self.reset_board()
                 return
