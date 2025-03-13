@@ -113,7 +113,8 @@ class unbeatableTTTGameUI:
                 self.current_player = self.cpu
                 self.root.after(500, self.cpu_move)
  
-    def minimax(self, depth, is_maximizing):
+    def minimax(self, depth, is_maximizing, alpha, beta):
+        self.nodes_evaluated += 1 #remove
         winner = self.find_winner()
         if winner == self.cpu:
             return 10 - depth
@@ -122,41 +123,59 @@ class unbeatableTTTGameUI:
         elif self.is_draw():
             return 0
 
-        if is_maximizing: # cpu move
+        if is_maximizing:
             best_score = -float('inf')
             for i in range(3):
                 for j in range(3):
                     if self.board[i][j] == "":
-                        self.board[i][j] = self.cpu # try a move
-                        score = self.minimax(depth + 1, False) # recursion
-                        self.board[i][j] = ""  # undo the move
+                        self.board[i][j] = self.cpu
+                        score = self.minimax(depth + 1, False, alpha, beta)
+                        self.board[i][j] = ""
                         best_score = max(score, best_score)
+                        alpha = max(alpha, best_score)
+                        if beta <= alpha:
+                            print(f"Pruning at depth {depth} (α={alpha}, β={beta})") #remove
+                            return best_score
             return best_score
-        else: # user move
+        else:
             best_score = float('inf')
             for i in range(3):
                 for j in range(3):
                     if self.board[i][j] == "":
                         self.board[i][j] = self.player
-                        score = self.minimax(depth + 1, True)
+                        score = self.minimax(depth + 1, True, alpha, beta)
                         self.board[i][j] = ""
                         best_score = min(score, best_score)
+                        beta = min(beta, best_score)
+                        if beta <= alpha:
+                            print(f"Pruning at depth {depth} (α={alpha}, β={beta})") #remove
+                            return best_score
             return best_score
 
     def cpu_move(self):
+        self.nodes_evaluated = 0 #remove
         best_score = -float('inf')
         best_move = None
+        alpha = -float('inf')
+        beta = float('inf')
 
+        moves = []
         for i in range(3):
             for j in range(3):
                 if self.board[i][j] == "": 
-                    self.board[i][j] = self.cpu # try a move
-                    score = self.minimax(0, False) # call the minimax logic method
-                    self.board[i][j] = "" # undo the move
-                    
-                    if score > best_score:
-                        best_score = score
-                        best_move = (i, j)
+                    self.board[i][j] = self.cpu
+                    score = self.minimax(0, False, alpha, beta)
+                    self.board[i][j] = ""
+                    moves.append(((i,j), score))
+
+        moves.sort(key=lambda x: x[1], reverse=True)
+
+        for (i,j), score in moves:            
+            if score > best_score:
+                best_score = score
+                best_move = (i, j)
+
+        print(f"Nodes evaluated: {self.nodes_evaluated}") # remove
 
         if best_move:
             row, col = best_move
