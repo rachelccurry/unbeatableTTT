@@ -114,7 +114,7 @@ class unbeatableTTTGameUI:
                 self.root.after(500, self.cpu_move)
  
     def minimax(self, depth, is_maximizing, alpha, beta):
-        self.nodes_evaluated += 1 #remove
+        self.nodes_evaluated += 1
         winner = self.find_winner()
         if winner == self.cpu:
             return 10 - depth
@@ -134,7 +134,6 @@ class unbeatableTTTGameUI:
                         best_score = max(score, best_score)
                         alpha = max(alpha, best_score)
                         if beta <= alpha:
-                            print(f"Pruning at depth {depth} (α={alpha}, β={beta})") #remove
                             return best_score
             return best_score
         else:
@@ -148,12 +147,11 @@ class unbeatableTTTGameUI:
                         best_score = min(score, best_score)
                         beta = min(beta, best_score)
                         if beta <= alpha:
-                            print(f"Pruning at depth {depth} (α={alpha}, β={beta})") #remove
                             return best_score
             return best_score
 
     def cpu_move(self):
-        self.nodes_evaluated = 0 #remove
+        self.nodes_evaluated = 0
         best_score = -float('inf')
         best_move = None
         alpha = -float('inf')
@@ -175,7 +173,7 @@ class unbeatableTTTGameUI:
                 best_score = score
                 best_move = (i, j)
 
-        print(f"Nodes evaluated: {self.nodes_evaluated}") # remove
+        print(f"Nodes evaluated: {self.nodes_evaluated}")
 
         if best_move:
             row, col = best_move
